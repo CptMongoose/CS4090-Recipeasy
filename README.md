@@ -16,6 +16,7 @@ of your culinary skills? Find inspiration with the Surprise Me! feature or searc
 specific highly rated recipes that others on the platform have uploaded!
 
 Objectives
+
 • Design simple UI that allows users to view suggested recipes based on preferences
 • Implement recipe library to allow users to save their favorite recipes and organize
 them by category or create custom recipe playlist (ex: “spooky season”)
@@ -25,6 +26,7 @@ them by category or create custom recipe playlist (ex: “spooky season”)
 • Surprise me feature gives a random recipe
 
 Scope
+
 • The project will focus on giving recipe recommendations for individual users. Core
 features include the ability to save recipes, search for recommendations of new
 recipes, and the ability to filter foods out based on allergies. Things that are not in

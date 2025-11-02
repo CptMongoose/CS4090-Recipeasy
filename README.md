@@ -18,12 +18,18 @@ specific highly rated recipes that others on the platform have uploaded!
 Objectives
 
 • Design simple UI that allows users to view suggested recipes based on preferences
+
 • Implement recipe library to allow users to save their favorite recipes and organize
 them by category or create custom recipe playlist (ex: “spooky season”)
+
 • Implement database to keep track of users and their preferred foods
+
 • Food allergies filter
+
 • Recipe rating system
+
 • Surprise me feature gives a random recipe
+
 
 Scope
 

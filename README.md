@@ -15,6 +15,7 @@ Grandma’s recipe binder are over welcome to the future! Wanting to push the li
 of your culinary skills? Find inspiration with the Surprise Me! feature or search for
 specific highly rated recipes that others on the platform have uploaded!
 
+
 Objectives
 
 • Design simple UI that allows users to view suggested recipes based on preferences
@@ -29,6 +30,7 @@ them by category or create custom recipe playlist (ex: “spooky season”)
 • Recipe rating system
 
 • Surprise me feature gives a random recipe
+
 
 
 Scope

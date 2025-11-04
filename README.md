@@ -40,3 +40,5 @@ recipes, and the ability to filter foods out based on allergies. Things that are
 scope are interactions between users and artificial intelligence scanning fridges for
 food.
 
+**JIRA BOARD LINK**
+https://mst-team-ykouad7w.atlassian.net/jira/software/projects/SCRUM/boards/1

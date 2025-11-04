@@ -52,4 +52,4 @@ scope are interactions between users and artificial intelligence scanning fridge
 food.
 
 **JIRA BOARD LINK**
-https://mst-team-ykouad7w.atlassian.net/jira/software/projects/SCRUM/boards/1
+https://id.atlassian.com/invite/p/jira-software?id=6OsgUecfTauRb9FuiR9bvQ

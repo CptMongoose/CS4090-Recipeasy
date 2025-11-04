@@ -5,8 +5,14 @@ Recipeasy: The Recipe Recommendation System
 Created by: Nathan Fischer, Christian Masawi, and Ethan Daly
 
 Team Breakdown: 
+
+
 Team Lead: Christian Masawi
+
+
 Developers: Ethan Daly and Nathan Fischer
+
+
 Documentation Lead: Nathan Fischer
 
 Coming up with recipes with some random ingredients is hard. You have a tomato

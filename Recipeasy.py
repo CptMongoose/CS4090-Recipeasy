@@ -79,18 +79,25 @@ def search_recipes_by_name(df, query):
 
 def search_recipes_by_ingredient(df, query):
 
-    query = query.lower()
-    if 'ingredients' in df.columns:
-        matches = df[df['ingredients'].str.lower().str.contains(query, na=False)]
-    else:
-        print("Warning: Ingredients column not found in dataset.")
-        matches = pd.DataFrame()
+    if 'ingredients' not in df.columns:
+        return pd.DataFrame()
+
+    ingredients = [ing.strip().lower() for ing in query.split(',') if ing.strip()]
+    
+    if not ingredients:
+        return pd.DataFrame()
+    
+    matches = df
+    
+    for ingredient in ingredients:
+        matches = matches[matches['ingredients'].astype(str).str.lower().str.contains(ingredient, na=False, regex=False)]
+    
     return matches
 
 def display_recipe(recipe):
 
     print("\n" + "="*60)
-    print("🍳 RECIPE RECOMMENDATION 🍳")
+    print("RECIPE RECOMMENDATION")
     print("="*60)
     
     print(f"\nName: {recipe['name']}")

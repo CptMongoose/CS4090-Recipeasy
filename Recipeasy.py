@@ -235,7 +235,7 @@ def main():
                 display_recipe(random_recipe)
 
         elif choice == '4':
-            print("\nThank you for using Recipe Recommender! Happy cooking! 👨‍🍳")
+            print("\nThank you for using Recipe Recommender!")
             break
         
         else:

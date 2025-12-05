@@ -204,7 +204,9 @@ def main():
             
         elif choice == '3':
             # Search by ingredient
-            query = input("\nEnter ingredient to search: ").strip()
+            print("\nEnter ingredient(s) to search:")
+            print("(For multiple ingredients, separate with commas. Example: chicken, garlic, tomato)")
+            query = input("Ingredient(s): ").strip()
             
             if not query:
                 print("Please enter a search term.")
@@ -213,9 +215,14 @@ def main():
             matches = search_recipes_by_ingredient(df, query)
             
             if len(matches) == 0:
-                print(f"\nNo recipes found with ingredient '{query}'. Try another search!")
+                print(f"\nNo recipes found with ingredient(s) '{query}'. Try another search!")
             else:
-                print(f"\nFound {len(matches)} recipes with ingredient '{query}'!")
+                ingredients_list = [ing.strip() for ing in query.split(',')]
+                if len(ingredients_list) > 1:
+                    print(f"\nFound {len(matches)} recipes containing ALL of: {', '.join(ingredients_list)}")
+                else:
+                    print(f"\nFound {len(matches)} recipes with ingredient '{query}'!")
+                
                 print("\n" + "="*60)
                 print("ALL MATCHING RECIPES:")
                 print("="*60)
@@ -226,7 +233,7 @@ def main():
                 print("\nDisplaying a random recipe from the results:")
                 random_recipe = matches.sample(n=1).iloc[0]
                 display_recipe(random_recipe)
-        
+
         elif choice == '4':
             print("\nThank you for using Recipe Recommender! Happy cooking! 👨‍🍳")
             break

@@ -125,7 +125,7 @@ def display_recipe(recipe):
 def main():
 
     print("="*60)
-    print("🍽️  RANDOM RECIPE RECOMMENDER 🍽️")
+    print("RANDOM RECIPE RECOMMENDER")
     print("="*60)
     print("\nWelcome! This program recommends random recipes from Kaggle's")
     print("Recipe Dataset (over 2M recipes).\n")
@@ -163,9 +163,45 @@ def main():
                 print(f"\nNo recipes found with name matching '{query}'. Try another search!")
             else:
                 print(f"\nFound {len(matches)} recipes with name matching '{query}'!")
-                random_recipe = matches.sample(n=1).iloc[0]
-                display_recipe(random_recipe)
-        
+                
+                # Check if there are multiple recipes with the same exact name
+                for name in matches['name'].unique():
+                    versions = matches[matches['name'] == name]
+                    
+                    if len(versions) > 1:
+                        # Multiple versions of the same recipe
+                        print("\n" + "="*60)
+                        print(f"{name} ({len(versions)} versions found):")
+                        print("="*60)
+                        
+                        for idx, (_, recipe) in enumerate(versions.iterrows(), 1):
+                            print(f"\n  VERSION {idx}:")
+                            print(f"Name: {recipe['name']}")
+                            
+                            if 'minutes' in recipe.index:
+                                print(f"Cooking Time: {recipe['minutes']} minutes")
+                            
+                            if 'n_steps' in recipe.index:
+                                print(f"Number of Steps: {recipe['n_steps']}")
+                            
+                            if 'n_ingredients' in recipe.index:
+                                print(f"Number of Ingredients: {recipe['n_ingredients']}")
+                            
+                            if 'ingredients' in recipe.index and pd.notna(recipe['ingredients']):
+                                print(f"Ingredients: {recipe['ingredients']}")
+                            
+                            if 'steps' in recipe.index and pd.notna(recipe['steps']):
+                                print(f"Instructions: {recipe['steps']}")
+                            
+                            if 'description' in recipe.index and pd.notna(recipe['description']):
+                                print(f"Description: {recipe['description']}")
+                            
+                            print("-" * 60)
+                    else:
+                        # Only one version, display normally
+                        random_recipe = versions.iloc[0]
+                        display_recipe(random_recipe)
+            
         elif choice == '3':
             # Search by ingredient
             query = input("\nEnter ingredient to search: ").strip()

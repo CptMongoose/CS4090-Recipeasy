@@ -2,7 +2,7 @@
 This is the Git Repository for the CS 4090: SE Capstone 1 Project.
 
 Recipeasy: The Recipe Recommendation System
-Created by: Nathan Fischer, Christian Masawi, and Ethan Daly
+Created by: Nathan Fischer, and Christian Masawi
 
 Team Breakdown: 
 
@@ -10,7 +10,7 @@ Team Breakdown:
 Team Lead: Christian Masawi
 
 
-Developers: Ethan Daly and Nathan Fischer
+Developers: Nathan Fischer
 
 
 Documentation Lead: Nathan Fischer

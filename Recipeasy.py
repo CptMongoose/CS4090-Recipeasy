@@ -26,6 +26,15 @@ def download_dataset():
         print("2. Set up Kaggle API credentials (kaggle.json in ~/.kaggle/)")
         print("3. Accepted the dataset terms on Kaggle website")
         return False
+        
+        """ 
+        To set up the API Key whenever you have it saved, follow these steps!
+
+        mkdir -p /home/codespace/.config/kaggle
+        nano /home/codespace/.config/kaggle/kaggle.json
+
+        {"username":"your_kaggle_username","key":"your_api_key"}
+        """
 
 def load_recipe_data():
 

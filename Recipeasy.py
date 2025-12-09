@@ -136,7 +136,7 @@ def main():
     
     while True:
         print("\nWhat would you like to do?")
-        print("1. Get a completely random recipe")
+        print("1. Suprise Me!")
         print("2. Search for recipes by name")
         print("3. Search for recipes by ingredient")
         print("4. Quit")
@@ -228,7 +228,7 @@ def main():
                 display_recipe(random_recipe)
 
         elif choice == '4':
-            print("\nThank you for using Recipe Recommender!")
+            print("\nThank you for using Recipeasy!")
             break
         
         else:

@@ -1,4 +1,3 @@
-from operator import length_hint
 import pandas as pd
 import random
 import os
@@ -8,7 +7,6 @@ def download_dataset():
 
     try:
         import kaggle
-        # Download the dataset
         kaggle.api.dataset_download_files(
             'shuyangli94/food-com-recipes-and-user-interactions',
             path='./data',
@@ -165,7 +163,7 @@ def main():
 
     while True:
         print("\nWhat would you like to do?")
-        print("1. Get a completely random recipe")
+        print("1. Suprise Me!")
         print("2. Search for recipes by name")
         print("3. Search for recipes by ingredient")
         print("4. Add ingredients to filter")
@@ -180,7 +178,6 @@ def main():
             display_recipe(random_recipe)
             
         elif choice == '2':
-            # Search by name
             query = input("\nEnter recipe name to search: ").strip()
             
             if not query:
@@ -194,12 +191,10 @@ def main():
             else:
                 print(f"\nFound {len(matches)} recipes with name matching '{query}'!")
                 
-                # Check if there are multiple recipes with the same exact name
                 for name in matches['name'].unique():
                     versions = matches[matches['name'] == name]
                     
                     if len(versions) > 1:
-                        # Multiple versions of the same recipe
                         print("\n" + "="*60)
                         print(f"{name} ({len(versions)} versions found):")
                         print("="*60)
@@ -228,12 +223,10 @@ def main():
                             
                             print("-" * 60)
                     else:
-                        # Only one version, display normally
                         random_recipe = versions.iloc[0]
                         display_recipe(random_recipe)
             
         elif choice == '3':
-            # Search by ingredient
             print("\nEnter ingredient(s) to search:")
             print("(For multiple ingredients, separate with commas. Example: chicken, garlic, tomato)")
             query = input("Ingredient(s): ").strip()

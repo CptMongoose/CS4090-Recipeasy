@@ -1,3 +1,4 @@
+from operator import length_hint
 import pandas as pd
 import random
 import os
@@ -73,8 +74,10 @@ def load_recipe_data():
 
 def search_recipes_by_name(df, query):
 
-    query = query.lower()
     matches = df[df['name'].str.lower().str.contains(query, na=False)]
+
+    query = query.lower()
+    matches = matches[matches['name'].str.lower().str.contains(query, na=False)]
     return matches
 
 def search_recipes_by_ingredient(df, query):
@@ -122,6 +125,26 @@ def display_recipe(recipe):
     
     print("\n" + "="*60 + "\n")
 
+def add_to_filter(query, ingredient_filter):
+    new_ing = [ing.strip().lower() for ing in query.split(',') if ing.strip()]
+ 
+    for i in new_ing:
+        if len(ingredient_filter) or i not in ingredient_filter:
+            ingredient_filter.append(i)
+
+    return ingredient_filter
+
+def remove_from_filter(query, ingredient_filter):
+    bad_ing = [ing.strip().lower() for ing in query.split(',') if ing.strip()]
+
+    for i in bad_ing:
+        ingredient_filter = ingredient_filter.remove(i)
+
+    if ingredient_filter is None:
+        ingredient_filter = []
+
+    return ingredient_filter
+
 def main():
 
     print("="*60)
@@ -130,23 +153,30 @@ def main():
     print("\nWelcome! This program recommends random recipes from Kaggle's")
     print("Recipe Dataset (over 2M recipes).\n")
     
+    ingredient_filter = []
+
     df = load_recipe_data()
-    
+
     if df is None:
         return
-    
+
+    else:
+        f_df = df   #filtered df
+
     while True:
         print("\nWhat would you like to do?")
         print("1. Get a completely random recipe")
         print("2. Search for recipes by name")
         print("3. Search for recipes by ingredient")
-        print("4. Quit")
+        print("4. Add ingredients to filter")
+        print("5. Remove ingredients from filter")
+        print("0. Quit")
         
-        choice = input("\nEnter your choice (1-4): ").strip()
+        choice = input("\nEnter your choice: ").strip()
         
         if choice == '1':
             # Get completely random recipe
-            random_recipe = df.sample(n=1).iloc[0]
+            random_recipe = f_df.sample(n=1).iloc[0]
             display_recipe(random_recipe)
             
         elif choice == '2':
@@ -157,10 +187,10 @@ def main():
                 print("Please enter a search term.")
                 continue
             
-            matches = search_recipes_by_name(df, query)
+            matches = search_recipes_by_name(f_df, query)
             
             if len(matches) == 0:
-                print(f"\nNo recipes found with name matching '{query}'. Try another search!")
+                print(f"\nNo recipes found with ingredient(s) '{query}' and filter '{ingredient_filter}'. Try another search!")
             else:
                 print(f"\nFound {len(matches)} recipes with name matching '{query}'!")
                 
@@ -212,10 +242,10 @@ def main():
                 print("Please enter a search term.")
                 continue
             
-            matches = search_recipes_by_ingredient(df, query)
+            matches = search_recipes_by_ingredient(f_df, query)
             
             if len(matches) == 0:
-                print(f"\nNo recipes found with ingredient(s) '{query}'. Try another search!")
+                print(f"\nNo recipes found with ingredient(s) '{query}' and filter '{ingredient_filter}'. Try another search!")
             else:
                 ingredients_list = [ing.strip() for ing in query.split(',')]
                 if len(ingredients_list) > 1:
@@ -235,11 +265,36 @@ def main():
                 display_recipe(random_recipe)
 
         elif choice == '4':
-            print("\nThank you for using Recipe Recommender!")
+            #Add an ingredient to the filter
+            
+            query = input("\nEnter ingredients you'd like to filter (separate w/ ','): ").strip()
+
+            ingredient_filter =  add_to_filter(query, ingredient_filter)
+            for ingredient in ingredient_filter:
+                f_df = df[~df['ingredients'].astype(str).str.lower().str.contains(ingredient, na=False, regex=False)]
+
+        elif choice == '5':
+            #Remove an ingredient to the filter
+
+            if len(ingredient_filter) == 0:
+                print("There's nothing to remove from the filter.")
+
+            else: 
+                print("\nCurrent filter: ", ingredient_filter)
+                query = input("Enter ingredients you'd like remove from the filter (separate w/ ','): ").strip()
+
+                ingredient_filter =  remove_from_filter(query, ingredient_filter)
+
+                for ingredient in ingredient_filter:
+                    f_df = df[~df['ingredients'].astype(str).str.lower().str.contains(ingredient, na=False, regex=False)]
+
+
+        elif choice == '0':
+            print("\nThank you for using RecipEasy")
             break
         
         else:
-            print("\nInvalid choice. Please enter 1, 2, 3, or 4.")
+            print("\nInvalid choice. Please enter 1, 2, 3, 4, 5, or 0.")
 
 if __name__ == "__main__":
     main()

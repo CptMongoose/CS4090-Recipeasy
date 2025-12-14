@@ -184,3 +184,175 @@ class TestSearchRecipesByIngredient:
         result = search_recipes_by_ingredient(sample_dataframe, '   ,  ,  ')
         assert len(result) == 0
 
+class TestDisplayRecipe:
+    
+    def test_display_recipe_all_fields(self, sample_dataframe, capsys):
+        recipe = sample_dataframe.iloc[0]
+        display_recipe(recipe)
+        captured = capsys.readouterr()
+        
+        assert 'Chocolate Cake' in captured.out
+        assert '45 minutes' in captured.out
+        assert '10' in captured.out
+        assert '8' in captured.out
+    
+    def test_display_recipe_missing_fields(self, capsys):
+        recipe = pd.Series({'name': 'Simple Recipe'})
+        display_recipe(recipe)
+        captured = capsys.readouterr()
+        
+        assert 'Simple Recipe' in captured.out
+        assert 'RECIPE RECOMMENDATION' in captured.out
+    
+    def test_display_recipe_na_values(self, capsys):
+        recipe = pd.Series({
+            'name': 'Test Recipe',
+            'ingredients': pd.NA,
+            'steps': None,
+            'description': pd.NA
+        })
+        display_recipe(recipe)
+        captured = capsys.readouterr()
+        
+        assert 'Test Recipe' in captured.out
+
+class TestMain:
+    
+    @patch('Recipeasy.load_recipe_data')
+    def test_main_no_data(self, mock_load, capsys):
+        mock_load.return_value = None
+        main()
+        captured = capsys.readouterr()
+        assert 'RANDOM RECIPE RECOMMENDER' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_surprise_me(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['1', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'RECIPE RECOMMENDATION' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_search_by_name_found(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['2', 'chocolate', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'Chocolate Cake' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_search_by_name_not_found(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['2', 'pizza', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'No recipes found' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_search_by_name_empty(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['2', '', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'Please enter a search term' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_search_by_name_multiple_versions(self, mock_input, mock_load, capsys):
+        df = pd.DataFrame({
+            'name': ['Chocolate Cake', 'Chocolate Cake'],
+            'minutes': [45, 50],
+            'n_steps': [10, 12],
+            'n_ingredients': [8, 9],
+            'ingredients': ["['flour', 'sugar']", "['flour', 'sugar', 'cocoa']"],
+            'steps': ["['Mix', 'Bake']", "['Mix', 'Bake', 'Cool']"],
+            'description': ['Version 1', 'Version 2']
+        })
+        mock_load.return_value = df
+        mock_input.side_effect = ['2', 'chocolate', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'VERSION' in captured.out
+        assert '2 versions found' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_search_by_ingredient_found(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['3', 'chicken', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'Chicken Soup' in captured.out
+        assert 'ALL MATCHING RECIPES' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_search_by_ingredient_multiple(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['3', 'flour, sugar', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'containing ALL of' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_search_by_ingredient_not_found(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['3', 'bacon', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'No recipes found' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_search_by_ingredient_empty(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['3', '', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'Please enter a search term' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_quit(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'Thank you for using Recipeasy!' in captured.out
+    
+    @patch('Recipeasy.load_recipe_data')
+    @patch('builtins.input')
+    def test_main_invalid_choice(self, mock_input, mock_load, sample_dataframe, capsys):
+        mock_load.return_value = sample_dataframe
+        mock_input.side_effect = ['9', '4']
+        
+        main()
+        captured = capsys.readouterr()
+        
+        assert 'Invalid choice' in captured.out

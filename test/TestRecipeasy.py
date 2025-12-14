@@ -62,3 +62,77 @@ class TestDownloadDataset:
         mock_kaggle.api.dataset_download_files.side_effect = Exception("Download failed")
         result = download_dataset()
         assert result is False
+
+class TestLoadRecipeData:
+    
+    @patch('os.path.exists')
+    @patch('pandas.read_csv')
+    def test_load_recipe_data_first_path(self, mock_read_csv, mock_exists, sample_dataframe):
+        mock_exists.return_value = True
+        mock_read_csv.return_value = sample_dataframe
+        
+        result = load_recipe_data()
+        
+        assert result is not None
+        assert len(result) == 3
+        mock_read_csv.assert_called_once()
+    
+    @patch('os.path.exists')
+    @patch('pandas.read_csv')
+    def test_load_recipe_data_second_path(self, mock_read_csv, mock_exists, sample_dataframe):
+        mock_exists.side_effect = [False, True]
+        mock_read_csv.return_value = sample_dataframe
+        
+        result = load_recipe_data()
+        
+        assert result is not None
+        assert len(result) == 3
+    
+    @patch('os.path.exists')
+    @patch('pandas.read_csv')
+    def test_load_recipe_data_csv_error_then_success(self, mock_read_csv, mock_exists, sample_dataframe):
+        mock_exists.return_value = True
+        mock_read_csv.side_effect = [Exception("Read error"), sample_dataframe]
+        
+        result = load_recipe_data()
+        
+        assert result is not None
+        assert len(result) == 3
+    
+    @patch('os.path.exists')
+    @patch('builtins.input')
+    @patch('Recipeasy.download_dataset')
+    def test_load_recipe_data_download_yes_success(self, mock_download, mock_input, mock_exists, sample_dataframe):
+        mock_exists.side_effect = [False, False, False, False, True]
+        mock_input.return_value = 'yes'
+        mock_download.return_value = True
+        
+        with patch('pandas.read_csv', return_value=sample_dataframe):
+            result = load_recipe_data()
+            
+            assert result is not None
+            mock_download.assert_called_once()
+    
+    @patch('os.path.exists')
+    @patch('builtins.input')
+    @patch('Recipeasy.download_dataset')
+    def test_load_recipe_data_download_yes_failure(self, mock_download, mock_input, mock_exists):
+        mock_exists.return_value = False
+        mock_input.return_value = 'yes'
+        mock_download.return_value = False
+        
+        result = load_recipe_data()
+        
+        assert result is None
+        mock_download.assert_called_once()
+    
+    @patch('os.path.exists')
+    @patch('builtins.input')
+    def test_load_recipe_data_download_no(self, mock_input, mock_exists):
+        mock_exists.return_value = False
+        mock_input.return_value = 'no'
+        
+        result = load_recipe_data()
+        
+        assert result is None
+

@@ -136,3 +136,51 @@ class TestLoadRecipeData:
         
         assert result is None
 
+class TestSearchRecipesByName:
+    
+    def test_search_recipes_by_name_found(self, sample_dataframe):
+        result = search_recipes_by_name(sample_dataframe, 'chocolate')
+        assert len(result) == 1
+        assert 'Chocolate Cake' in result['name'].values
+    
+    def test_search_recipes_by_name_case_insensitive(self, sample_dataframe):
+        result = search_recipes_by_name(sample_dataframe, 'CHOCOLATE')
+        assert len(result) == 1
+    
+    def test_search_recipes_by_name_not_found(self, sample_dataframe):
+        result = search_recipes_by_name(sample_dataframe, 'pizza')
+        assert len(result) == 0
+    
+    def test_search_recipes_by_name_partial_match(self, sample_dataframe):
+        result = search_recipes_by_name(sample_dataframe, 'cake')
+        assert len(result) == 1
+
+
+class TestSearchRecipesByIngredient:
+    
+    def test_search_recipes_by_ingredient_found(self, sample_dataframe):
+        result = search_recipes_by_ingredient(sample_dataframe, 'chicken')
+        assert len(result) == 1
+        assert 'Chicken Soup' in result['name'].values
+    
+    def test_search_recipes_by_ingredient_multiple(self, sample_dataframe):
+        result = search_recipes_by_ingredient(sample_dataframe, 'flour, sugar')
+        assert len(result) == 2
+    
+    def test_search_recipes_by_ingredient_not_found(self, sample_dataframe):
+        result = search_recipes_by_ingredient(sample_dataframe, 'bacon')
+        assert len(result) == 0
+    
+    def test_search_recipes_by_ingredient_no_column(self):
+        df = pd.DataFrame({'name': ['Test']})
+        result = search_recipes_by_ingredient(df, 'test')
+        assert len(result) == 0
+    
+    def test_search_recipes_by_ingredient_empty_query(self, sample_dataframe):
+        result = search_recipes_by_ingredient(sample_dataframe, '')
+        assert len(result) == 0
+    
+    def test_search_recipes_by_ingredient_whitespace_only(self, sample_dataframe):
+        result = search_recipes_by_ingredient(sample_dataframe, '   ,  ,  ')
+        assert len(result) == 0
+

@@ -8,7 +8,9 @@ import io
 path = Path(__file__).resolve().parent.parent / "src"
 sys.path.insert(0, str(path))
 
-from src.Recipeasy import (
+import Recipeasy
+
+from Recipeasy import (
     download_dataset,
     load_recipe_data,
     search_recipes_by_name,

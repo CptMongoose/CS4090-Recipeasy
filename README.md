@@ -45,4 +45,4 @@ foods for the ingredients they want. Things that are not in scope are interactio
 users and artificial intelligence scanning fridges for food.
 
 **JIRA BOARD LINK**
-https://id.atlassian.com/invite/p/jira-software?id=6OsgUecfTauRb9FuiR9bvQ
+[https://id.atlassian.com/invite/p/jira-software?id=6OsgUecfTauRb9FuiR9bvQ](https://mst-team-bmfoi5l3.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog)

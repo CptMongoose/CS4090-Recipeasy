@@ -1,0 +1,58 @@
+name: RECIPEASY CICD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run basic tests
+        run: pytest -q
+
+      - name: Run tests with coverage
+        run: |
+          pytest -q \
+            --cov=. \
+            --cov-report=term \
+            --cov-report=xml \
+            --cov-report=html \
+
+      - name: Prepare the webpage
+        run: |
+          mkdir sites
+          mv htmlcov sites/
+          mv coverage.xml sites/
+
+      - name: upload the artifacts
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./sites
+
+  Deploy:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: deploy the artifacts
+        uses: actions/deploy-pages@v4
